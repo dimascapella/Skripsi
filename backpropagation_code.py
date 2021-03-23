@@ -21,10 +21,10 @@ class Neural_Network:
 
     def forward(self, input_list):
         inputs = np.array(input_list, ndmin=2).T
-        self.hiddenLayer = np.dot(self.weight_hidden, inputs, self.bias_hidden)
+        self.hiddenLayer = np.dot(self.weight_hidden, inputs) + self.bias_hidden
         self.Net_hiddenLayer = sigmoid(self.hiddenLayer)
 
-        self.outputLayer = np.dot(self.weight_output, self.Net_hiddenLayer, self.bias_output)
+        self.outputLayer = np.dot(self.weight_output, self.Net_hiddenLayer) + self.bias_output
         self.Net_outputLayer = sigmoid(self.outputLayer)
         return self.Net_outputLayer
 
@@ -54,10 +54,10 @@ class Neural_Network:
 
     def predict(self, input_list):
         inputs = np.array(input_list, ndmin=2).T
-        self.hiddenLayer = np.dot(self.weight_hidden, inputs, self.bias_hidden)
+        self.hiddenLayer = np.dot(self.weight_hidden, inputs) + self.bias_hidden
         self.Net_hiddenLayer = sigmoid(self.hiddenLayer)
 
-        self.outputLayer = np.dot(self.weight_output, self.Net_hiddenLayer, self.bias_output)
+        self.outputLayer = np.dot(self.weight_output, self.Net_hiddenLayer) + self.bias_output
         self.Net_outputLayer = sigmoid(self.outputLayer)
         return self.Net_outputLayer
 
@@ -85,38 +85,27 @@ class Neural_Network:
                 print("Epochs = ", i)
                 print("Cross-Entropy Loss =", loss)
                 print("Loss =", np.mean(np.square(targets - n.forward(inputs))))
+            if loss < 0.01:
+                print("Epochs = ", i)
+                print("Cross-Entropy Loss =", loss)
+                break
         accu_array = np.asarray(accu_train)
-        print("Accu Train: ", accu_array.sum() / accu_array.size * 100, "%")
+        self.accu_train = accu_array.sum() / accu_array.size * 100
+        self.final_loss = loss
+        print(self.final_loss)
+        print("Accu Train: ", self.accu_train , "%")
 
-train_data_file = open('new_aircraft_fusi.csv', 'r')
+train_data_file = open('new_dataset.csv', 'r')
 train_data_list = train_data_file.readlines()
 train_data_file.close()
 
-n = Neural_Network(input=1, hidden=100, output=2, learningRate=0.1)
-n.train_data(train_data_list, 10)
-test_data_file = open('test_fusi.csv', 'r')
-test_data_list = test_data_file.readlines()
-test_data_file.close()
+n = Neural_Network(input=1, hidden=200, output=4, learningRate=0.1)
+n.train_data(train_data_list, 1000)
 
-scoreboard = []
-for i in test_data_list:
-    all_values = i.split(',')
-    correct_label = int(all_values[0])
-    inputs = fc.convert_decimal(fc.add_dot_separator(all_values[1:]))
-    outputs = n.predict(inputs)
-    label = np.argmax(outputs)
-    if(label == correct_label):
-        scoreboard.append(1)
-    else:
-        scoreboard.append(0)
+# test without label
+inputs = fc.convert_decimal(fc.add_dot_separator(['1100011100001010']))
+outputs = n.predict(inputs)
+print(outputs)
 
-scorecard_array = np.asarray(scoreboard)
-print("Accu Test: ", scorecard_array.sum() / scorecard_array.size * 100, "%")
-
-#test without label
-# inputs = fc.convert_decimal(fc.add_dot_separator(['11111011'])) - 1.0
-# outputs = n.predict(inputs)
-# print(outputs)
-#
-# label = np.argmax(outputs)
-# print(label)
+label = np.argmax(outputs)
+print(label)
