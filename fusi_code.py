@@ -2,6 +2,15 @@ arrays = ['0000000000000001', '0000000000100000', '0000001000000000', '010000000
 information_fusion = []
 coba = ['0000000000000001', '0000000000100000']
 
+array = [['0000000000000001', '0000000000100000', '0000010000000000', '0100001000000000'],
+         ['0100000000000000', '0000010000100000', '0000001001000000', '0000010000100000'],
+         ['0100000000000000', '0000010000100000', '0000001001000000', '0000010000100000'],
+         ['0100000000000000', '0000010000100000', '0000001001000000', '0000010000100000'],
+         ['0100000000000000', '0000010000100000', '0000001001000000', '0000010000100000']]
+
+
+wings = []
+
 def XOR(x, y):
     if x != y:
         return '1'
@@ -54,15 +63,31 @@ def convert_decimal(binary):
     value = round(value, 2)
     return value
 
-for i in range(len(arrays) - 1):
+for i in range(len(array) - 1):
     temp = []
-    for j in range(len(arrays[0])):
+    for j in range(len(array[0])):
         if i == 0:
-            temp += XOR(arrays[i][j], arrays[i + 1][j])
+            temp += XOR(array[i][j], array[i + 1][j])
         else:
-            temp += XOR(information_fusion[0][j], arrays[i + 1][j])
+            temp += XOR(information_fusion[0][j], array[i + 1][j])
     information_fusion = ''.join(temp).split()
 
-print("Fusion Information Data =", information_fusion)
-print("Preprocessing Data =", convert_decimal(add_dot_separator(['0100111111100000'])))
-print(convert(['0100111111100000']))
+def batch_arrays(array_data, array_lisy_variable):
+    fusi = []
+    for i in range(len(array_data)):
+        for j in range(len(array_data[0]) - 1):
+            temp = []
+            for k in range(len(array_data[0][0])):
+                if j == 0:
+                    temp += XOR(array_data[i][j][k], array_data[i][j + 1][k])
+                else:
+                    temp += XOR(fusi[0][k], array_data[i][j + 1][k])
+            fusi = ''.join(temp).split()
+        array_lisy_variable.append(fusi)
+
+
+# print("Fusion Information Data =", information_fusion)
+# print("Preprocessing Data =", convert_decimal(add_dot_separator(['0100111111100000'])))
+# print(convert(['0100111111100000']))
+# batch_arrays(array, wings)
+# print(wings)

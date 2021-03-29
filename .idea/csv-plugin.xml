@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\double_hidden_layer.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\fusi_code.py">
           <value>
             <Attribute>
@@ -24,7 +31,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\new_dataset_separate_fusi.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\test_code.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\test_file.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
