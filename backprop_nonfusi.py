@@ -33,7 +33,7 @@ class Neural_Network:
         targets = np.array(target_list, ndmin=2).T
         m = targets.shape[0]
         # cost = -(1.0 / m) * (np.dot(target_list, np.log(self.Net_outputLayer)) + np.dot(1 - target_list, np.log(1 - self.Net_outputLayer)))
-        cost = ((self.Net_outputLayer - targets) ** 2).sum() / (2 * m)
+        cost = ((self.Net_outputLayer - targets) ** 2).sum() / m
         return cost
 
     def backprop(self, input_list, target_list):
@@ -108,3 +108,7 @@ print(outputs)
 
 label = np.argmax(outputs)
 print(label)
+
+#Uji
+#Node Hidden Layer 100 - 300
+#LR = 0.6

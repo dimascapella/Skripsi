@@ -1,5 +1,4 @@
 arrays = ['0000000000000001', '0000000000100000', '0000001000000000', '0100000000000000', '0000010000100000', '0000001001000000', '0000000100000011', '0000000010001000', '0010001000000000', '1000100000000000', '1001000100000010', '1000100010000000']
-information_fusion = []
 coba = ['0000000000000001', '0000000000100000']
 
 array = [['0000000000000001', '0000000000100000', '0000010000000000', '0100001000000000'],
@@ -63,14 +62,16 @@ def convert_decimal(binary):
     value = round(value, 2)
     return value
 
-for i in range(len(array) - 1):
-    temp = []
-    for j in range(len(array[0])):
-        if i == 0:
-            temp += XOR(array[i][j], array[i + 1][j])
-        else:
-            temp += XOR(information_fusion[0][j], array[i + 1][j])
-    information_fusion = ''.join(temp).split()
+def _fusi(array):
+    for i in range(len(array) - 1):
+        temp = []
+        for j in range(len(array[0])):
+            if i == 0:
+                temp += XOR(array[i][j], array[i + 1][j])
+            else:
+                temp += XOR(information_fusion[0][j], array[i + 1][j])
+        information_fusion = ''.join(temp).split()
+    return information_fusion
 
 def batch_arrays(array_data, array_lisy_variable):
     fusi = []

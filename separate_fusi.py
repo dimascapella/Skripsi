@@ -1,15 +1,19 @@
 import numpy as np
-import fusi_code as fc
 import time
+import fusi_code as fc
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 def deriv_sigmoid(x):
-    return x * (1.0 - x)
+    return (x) * (1.0 - (x))
 
 class Neural_Network:
     def __init__(self, input, hidden, output, learningRate):
+        self.loss_attemp = []
         self.n_input = input
         self.n_hidden = hidden
         self.n_output = output
@@ -17,8 +21,8 @@ class Neural_Network:
         self.bias_hidden = np.ones((hidden, 1))
         self.bias_output = np.ones((output, 1))
 
-        self.weight_hidden = np.random.rand(self.n_hidden, self.n_input) - 0.5
-        self.weight_output = np.random.rand(self.n_output, self.n_hidden) - 0.5
+        self.weight_hidden = np.random.uniform(low=-0.2, high=0.2, size=(self.n_hidden, self.n_input))
+        self.weight_output = np.random.uniform(low=-0.2, high=0.2, size=(self.n_output, self.n_hidden))
 
     def forward(self, input_list):
         inputs = np.array(input_list, ndmin=2).T
@@ -32,8 +36,9 @@ class Neural_Network:
     def calc_loss(self, target_list):
         targets = np.array(target_list, ndmin=2).T
         m = targets.shape[0]
+        cost = 0
         # cost = -(1.0 / m) * (np.dot(target_list, np.log(self.Net_outputLayer)) + np.dot(1 - target_list, np.log(1 - self.Net_outputLayer)))
-        cost = ((self.Net_outputLayer - targets) ** 2).sum() / m
+        cost = cost + ((self.Net_outputLayer - targets) ** 2).sum() / m
         return cost
 
     def backprop(self, input_list, target_list):
@@ -42,12 +47,13 @@ class Neural_Network:
         m = targets.shape[0]
 
         self.output_error = self.Net_outputLayer - targets
-        self.output_error_weight = np.dot(self.output_error * deriv_sigmoid(self.Net_outputLayer), self.Net_hiddenLayer.T) * ( 1 / m )
-        self.output_error_bias = np.sum(self.output_error, axis=1, keepdims=True) * ( 1 / m )
+        self.output_error_weight = np.dot(self.output_error * deriv_sigmoid(self.Net_outputLayer),
+                                          self.Net_hiddenLayer.T) * (1 / m)
+        self.output_error_bias = np.sum(self.output_error, axis=1, keepdims=True) * (1 / m)
 
         self.hidden_error = np.dot(self.weight_output.T, self.output_error)
-        self.hidden_error_weight = np.dot(self.hidden_error * deriv_sigmoid(self.Net_hiddenLayer), inputs.T) * ( 1 / m )
-        self.hidden_error_bias = np.sum(self.hidden_error, axis=1, keepdims=True) * ( 1 / m )
+        self.hidden_error_weight = np.dot(self.hidden_error * deriv_sigmoid(self.Net_hiddenLayer), inputs.T) * (1 / m)
+        self.hidden_error_bias = np.sum(self.hidden_error, axis=1, keepdims=True) * (1 / m)
 
     def update_params(self):
         self.weight_output = self.weight_output - self.learning_rate * self.output_error_weight
@@ -90,16 +96,43 @@ class Neural_Network:
             if i % 10 == 0:
                 print("Epochs = ", i)
                 print("Loss =", loss)
+            self.loss_attemp.append(loss)
         accu_array = np.asarray(accu_train)
-        print("Accu Train: ", accu_array.sum() / accu_array.size * 100, "%")
+        self.accu = accu_array.sum() / accu_array.size * 100
+        print("Accu Train: ", self.accu , "%")
         print('The script took {0} second !'.format(time.time() - startTime))
 
-train_data_file = open('new_dataset_separate_fusi.csv', 'r')
+train_data_file = open('separate_fusi_train.csv', 'r')
 train_data_list = train_data_file.readlines()
 train_data_file.close()
 
-n = Neural_Network(input=5, hidden=150, output=4, learningRate=0.5)
+n = Neural_Network(input=5, hidden=300, output=4, learningRate=0.6)
 n.train_data(train_data_list, 1000)
+
+test_data = open('separate_fusi_test.csv','r')
+test_data_list = test_data.readlines()
+test_data.close()
+
+actual = []
+predict = []
+for i in test_data_list:
+    all_values = i.split(',')
+    input_data = (np.asfarray(all_values[1:]))
+    target_data = np.zeros(n.n_output) + 0.01
+    target_data[int(all_values[0])] = 0.99
+    actual.append(int(all_values[0]))
+    outputs = n.predict(input_data)
+    predict.append(np.argmax(outputs))
+
+print(actual)
+print(predict)
+
+print(confusion_matrix(actual, predict))
+print(classification_report(actual, predict))
+
+# plot1 = plt.figure(1)
+# plt.plot(n.loss_attemp)
+# plt.show()
 # classes_data = []
 # wings_data = []
 # engine_data = []
@@ -128,18 +161,42 @@ n.train_data(train_data_list, 1000)
 # for i in range(len(classes_data)):
 #     print(data[i][5])
 
-
 # test without label
-inputs1 = np.asfarray(['0000100001010010','1000111010110000','0000000000100001','0000010001000000','0101001011000100'])
-outputs1 = n.predict(inputs1)
-print(outputs1)
+# inputs1 = np.asfarray(['0100001000100001','0000011101100011','0000000010001000','0010001000000000','1100110101001010'])
+# outputs1 = n.predict(inputs1)
+# print(outputs1)
+#
+# label1 = np.argmax(outputs1)
+# print(label1)
+#
+# inputs2 = np.asfarray(['0000100001010010','0001100101011000','0000000100001000','0000000100010000','0101111000000100'])
+# outputs2 = n.predict(inputs2)
+# print(outputs2)
+#
+# label2 = np.argmax(outputs2)
+# print(label2)
 
-label1 = np.argmax(outputs1)
-print(label1)
+#Uji
+#Node Hidden Layer 100 - 300
+#LR = 0.6
 
-inputs2 = np.asfarray(['0100001000100001','0000010110100011','0000000010001000','0010001000000000','1101000110101010'])
-outputs2 = n.predict(inputs2)
-print(outputs2)
-
-label2 = np.argmax(outputs2)
-print(label2)
+# wings = []
+# engine = []
+# fuselage = []
+# tail = []
+# additional = []
+# data_predict = []
+# #
+# wings.extend(['0000000000000001','0000000000100000','0000001000000000','0100000000000000'])
+# engine.extend(['0000010000100000','0000001001000000','0000000100000011'])
+# fuselage.extend(['0000000010001000'])
+# tail.extend(['0000000100010000'])
+# additional.extend(['0100010000000000','1001000100000010','1000100010000000','0011100000000000'])
+#
+# data_predict.extend([fc._fusi(wings)[0], fc._fusi(engine)[0], fuselage[0], tail[0], fc._fusi(additional)[0]])
+# data_input_predict = np.asfarray(data_predict)
+# outputs2 = n.predict(data_input_predict)
+# print(outputs2)
+#
+# label2 = np.argmax(outputs2)
+# print(label2)
