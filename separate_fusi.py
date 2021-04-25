@@ -100,14 +100,37 @@ class Neural_Network:
         accu_array = np.asarray(accu_train)
         self.accu = accu_array.sum() / accu_array.size * 100
         print("Accu Train: ", self.accu , "%")
+        print("Last Loss =", loss)
         print('The script took {0} second !'.format(time.time() - startTime))
 
 train_data_file = open('separate_fusi_train.csv', 'r')
 train_data_list = train_data_file.readlines()
 train_data_file.close()
 
+new_data = []
+for i in train_data_list:
+    data = i.split(',')
+    classes = list(str(data[0]))
+    classes.insert(1, ',')
+    classes = ''.join(classes)
+    wings = list(str(fc.convert_decimal(fc.add_dot_separator(data[1]))))
+    wings.insert(17, ',')
+    wings = ''.join(wings)
+    engines = list(str(fc.convert_decimal(fc.add_dot_separator(data[2]))))
+    engines.insert(17, ',')
+    engines = ''.join(engines)
+    fuselages = list(str(fc.convert_decimal(fc.add_dot_separator(data[3]))))
+    fuselages.insert(17, ',')
+    fuselages = ''.join(fuselages)
+    tails = list(str(fc.convert_decimal(fc.add_dot_separator(data[4]))))
+    tails.insert(17, ',')
+    tails = ''.join(tails)
+    additionals = str(fc.convert_decimal(fc.add_dot_separator(data[5])))
+    data_normalize = classes + wings + engines + fuselages + tails + additionals
+    new_data.append(data_normalize)
+
 n = Neural_Network(input=5, hidden=300, output=4, learningRate=0.6)
-n.train_data(train_data_list, 1000)
+n.train_data(new_data, 1000)
 
 test_data = open('separate_fusi_test.csv','r')
 test_data_list = test_data.readlines()
@@ -115,7 +138,29 @@ test_data.close()
 
 actual = []
 predict = []
+new_test_data = []
 for i in test_data_list:
+    data = i.split(',')
+    classes = list(str(data[0]))
+    classes.insert(1, ',')
+    classes = ''.join(classes)
+    wings = list(str(fc.convert_decimal(fc.add_dot_separator(data[1]))))
+    wings.insert(17, ',')
+    wings = ''.join(wings)
+    engines = list(str(fc.convert_decimal(fc.add_dot_separator(data[2]))))
+    engines.insert(17, ',')
+    engines = ''.join(engines)
+    fuselages = list(str(fc.convert_decimal(fc.add_dot_separator(data[3]))))
+    fuselages.insert(17, ',')
+    fuselages = ''.join(fuselages)
+    tails = list(str(fc.convert_decimal(fc.add_dot_separator(data[4]))))
+    tails.insert(17, ',')
+    tails = ''.join(tails)
+    additionals = str(fc.convert_decimal(fc.add_dot_separator(data[5])))
+    data_normalize = classes + wings + engines + fuselages + tails + additionals
+    new_test_data.append(data_normalize)
+
+for i in new_test_data:
     all_values = i.split(',')
     input_data = (np.asfarray(all_values[1:]))
     target_data = np.zeros(n.n_output) + 0.01
@@ -123,6 +168,40 @@ for i in test_data_list:
     actual.append(int(all_values[0]))
     outputs = n.predict(input_data)
     predict.append(np.argmax(outputs))
+
+random_data = open('data_uji_random.csv', 'r')
+random_data_list = random_data.readlines()
+random_data.close()
+
+# actual = [0,0,0,1,1,2,2,2,3,3]
+# predict = []
+# new_test_data = []
+# for i in random_data_list:
+#     data = i.split(',')
+#     # classes = list(str(data[0]))
+#     # classes.insert(1, ',')
+#     # classes = ''.join(classes)
+#     wings = list(str(fc.convert_decimal(fc.add_dot_separator(data[0]))))
+#     wings.insert(17, ',')
+#     wings = ''.join(wings)
+#     engines = list(str(fc.convert_decimal(fc.add_dot_separator(data[1]))))
+#     engines.insert(17, ',')
+#     engines = ''.join(engines)
+#     fuselages = list(str(fc.convert_decimal(fc.add_dot_separator(data[2]))))
+#     fuselages.insert(17, ',')
+#     fuselages = ''.join(fuselages)
+#     tails = list(str(fc.convert_decimal(fc.add_dot_separator(data[3]))))
+#     tails.insert(17, ',')
+#     tails = ''.join(tails)
+#     additionals = str(fc.convert_decimal(fc.add_dot_separator(data[4])))
+#     data_normalize = wings + engines + fuselages + tails + additionals
+#     new_test_data.append(data_normalize)
+#
+# for i in new_test_data:
+#     all_values = i.split(',')
+#     input_data = np.asfarray(all_values[0:])
+#     outputs = n.predict(input_data)
+#     predict.append(np.argmax(outputs))
 
 print(actual)
 print(predict)
@@ -200,3 +279,8 @@ print(classification_report(actual, predict))
 #
 # label2 = np.argmax(outputs2)
 # print(label2)
+
+# inputs1 = np.asfarray(['0100001000100001','0000011101100011','0000000010001000','0010001000000000','1100110101001010'])
+# outputs1 = n.predict(inputs1)
+# print(outputs1)
+
