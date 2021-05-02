@@ -59,6 +59,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\non_normalize_code.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\separate_fusi.py">
           <value>
             <Attribute>

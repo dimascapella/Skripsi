@@ -1,3 +1,4 @@
+import numpy as np
 arrays = ['0000000000000001', '0000000000100000', '0000001000000000', '0100000000000000', '0000010000100000', '0000001001000000', '0000000100000011', '0000000010001000', '0010001000000000', '1000100000000000', '1001000100000010', '1000100010000000']
 coba = ['0000000000000001', '0000000000100000']
 
@@ -9,6 +10,9 @@ array = [['0000000000000001', '0000000000100000', '0000010000000000', '010000100
 
 
 wings = []
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
 def XOR(x, y):
     if x != y:
@@ -87,8 +91,8 @@ def batch_arrays(array_data, array_lisy_variable):
 
 
 # print("Fusion Information Data =", information_fusion)
-# print("Preprocessing Data =", add_dot_separator(['0100111111100000']))
-# print("Preprocessing Data =", convert_decimal(add_dot_separator(['0100111111100000'])))
+print("Preprocessing Data =", add_dot_separator(['0100111111100000']))
+print("Preprocessing Data =", convert_decimal(add_dot_separator(['0101110111110010'])))
 # print(convert(['0100111111100000']))
 # batch_arrays(array, wings)
 # print(wings)
