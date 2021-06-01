@@ -1,5 +1,3 @@
-from random import randrange
-
 import numpy as np
 import time
 import fusi_code as fc
@@ -72,52 +70,7 @@ class Neural_Network:
         self.Net_outputLayer = sigmoid(self.outputLayer)
         return self.Net_outputLayer
 
-    def cross_validation_split(self, datasets, n_folds):
-        dataset_split = []
-        dataset_copy = datasets
-        fold_size = int(len(datasets) / n_folds)
-        for i in range(n_folds):
-            fold = []
-            while len(fold) < fold_size:
-                index = randrange(len(dataset_copy))
-                fold.append(dataset_copy.pop(index))
-            dataset_split.append(fold)
-        return dataset_split
-
-    def accuracy_metric(self, actual, predicted):
-        correct = 0
-        for i in range(len(actual)):
-            if(actual[i] == predicted[i]):
-                correct += 1
-        return correct / float(len(actual)) * 100.0
-
-    def kfold_validation(self, dataset, model, n_folds, epochs):
-        folds = n.cross_validation_split(dataset, n_folds)
-        scores = list()
-        for fold in folds:
-            train_set = list(folds)
-            train_set.remove(fold)
-            train_set = sum(train_set, [])
-            model(train_set, epochs)
-            test_set = list()
-            predict_label = []
-            for row in fold:
-                rows = row.split(',')
-                row_copy = list(rows)
-                test_set.append(row_copy)
-                input_data = (np.asfarray(rows[1:]))
-                actual = [int(rows[0]) for rows in fold]
-                predicted = np.argmax(n.predict(input_data))
-                predict_label.append(predicted)
-            print(predict_label)
-            print(actual)
-            accuracy = n.accuracy_metric(actual, predict_label)
-            scores.append(accuracy)
-            print('- Training [%d] performed' % len(scores))
-            print('---------------------------------------')
-        return scores
-
-    def fit(self, data_train, epochs):
+    def train_data(self, data_train, epochs):
         accu_train = []
         all_label = []
         for i in range(epochs):
@@ -140,9 +93,9 @@ class Neural_Network:
                     accu_train.append(1)
                 else:
                     accu_train.append(0)
-            # if i % 10 == 0:
-            #     print("Epochs = ", i)
-            #     print("Loss =", loss)
+            if i % 10 == 0:
+                print("Epochs = ", i)
+                print("Loss =", loss)
             if loss < 0.00001:
                 break
             self.loss_attemp.append(loss)
@@ -152,7 +105,7 @@ class Neural_Network:
         print("Last Loss =", loss)
         print('The script took {0} second !'.format(time.time() - startTime))
 
-train_data_file = open('new_dataset_separate_fusi.csv', 'r')
+train_data_file = open('new_dataset_nonfusi.csv', 'r')
 train_data_list = train_data_file.readlines()
 train_data_file.close()
 
@@ -162,63 +115,77 @@ for i in train_data_list:
     classes = list(str(data[0]))
     classes.insert(1, ',')
     classes = ''.join(classes)
-    wings = list(str(fc.convert_decimal(fc.add_dot_separator(data[1]))))
-    wings.insert(17, ',')
-    wings = ''.join(wings)
-    engines = list(str(fc.convert_decimal(fc.add_dot_separator(data[2]))))
-    engines.insert(17, ',')
-    engines = ''.join(engines)
-    fuselages = list(str(fc.convert_decimal(fc.add_dot_separator(data[3]))))
-    fuselages.insert(17, ',')
-    fuselages = ''.join(fuselages)
-    tails = list(str(fc.convert_decimal(fc.add_dot_separator(data[4]))))
-    tails.insert(17, ',')
-    tails = ''.join(tails)
-    additionals = str(fc.convert_decimal(fc.add_dot_separator(data[5])))
-    data_normalize = classes + wings + engines + fuselages + tails + additionals
+    jenis_sayap = list(str(fc.convert_decimal(fc.add_dot_separator(data[1]))))
+    jenis_sayap.insert(17, ',')
+    jenis_sayap = ''.join(jenis_sayap)
+    penempatan_sayap = list(str(fc.convert_decimal(fc.add_dot_separator(data[2]))))
+    penempatan_sayap.insert(17, ',')
+    penempatan_sayap = ''.join(penempatan_sayap)
+    jumlah_sayap = list(str(fc.convert_decimal(fc.add_dot_separator(data[3]))))
+    jumlah_sayap.insert(17, ',')
+    jumlah_sayap = ''.join(jumlah_sayap)
+    arah_sayap = list(str(fc.convert_decimal(fc.add_dot_separator(data[4]))))
+    arah_sayap.insert(17, ',')
+    arah_sayap = ''.join(arah_sayap)
+    jenis_mesin = list(str(fc.convert_decimal(fc.add_dot_separator(data[5]))))
+    jenis_mesin.insert(17, ',')
+    jenis_mesin = ''.join(jenis_mesin)
+    jumlah_mesin = list(str(fc.convert_decimal(fc.add_dot_separator(data[6]))))
+    jumlah_mesin.insert(17, ',')
+    jumlah_mesin = ''.join(jumlah_mesin)
+    posisi_mesin = list(str(fc.convert_decimal(fc.add_dot_separator(data[7]))))
+    posisi_mesin.insert(17, ',')
+    posisi_mesin = ''.join(posisi_mesin)
+    badan_pesawat = list(str(fc.convert_decimal(fc.add_dot_separator(data[8]))))
+    badan_pesawat.insert(17, ',')
+    badan_pesawat = ''.join(badan_pesawat)
+    jenis_ekor = list(str(fc.convert_decimal(fc.add_dot_separator(data[9]))))
+    jenis_ekor.insert(17, ',')
+    jenis_ekor = ''.join(jenis_ekor)
+    jenis_landing_gear = list(str(fc.convert_decimal(fc.add_dot_separator(data[10]))))
+    jenis_landing_gear.insert(17, ',')
+    jenis_landing_gear = ''.join(jenis_landing_gear)
+    canard = list(str(fc.convert_decimal(fc.add_dot_separator(data[11]))))
+    canard.insert(17, ',')
+    canard = ''.join(canard)
+    persenjataan = list(str(fc.convert_decimal(fc.add_dot_separator(data[12]))))
+    persenjataan.insert(17, ',')
+    persenjataan = ''.join(persenjataan)
+    warna = str(fc.convert_decimal(fc.add_dot_separator(data[13])))
+    data_normalize = classes + jenis_sayap + penempatan_sayap + jumlah_sayap + arah_sayap + jenis_mesin + jumlah_mesin + posisi_mesin + badan_pesawat + jenis_ekor + jenis_landing_gear + canard + persenjataan + warna
     new_data.append(data_normalize)
-    # print("Binary Data")
-    # print(data[1] + ", " + data[2] + ", " + data[3] + ", " + data[4] + ", " + data[5])
-    # print("Normalize Data")
-    # print(wings + engines + fuselages + tails + additionals)
-    # print("")
-n = Neural_Network(input=5, hidden=300, output=4, learningRate=0.6)
-#80:20 data
-# n.train_data(new_data, 1000)
 
-#100 data K-Fold
-scores = n.kfold_validation(new_data, n.fit, 10, 1000)
-print('Scores (per fold): %s' % scores)
-print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+n = Neural_Network(input=13, hidden=300, output=4, learningRate=0.6)
+n.train_data(new_data, 1000)
 
-test_data = open('new_dataset_separate_fusi.csv','r')
-test_data_list = test_data.readlines()
-test_data.close()
-
-actual = []
-predict = []
-new_test_data = []
-for i in test_data_list:
-    data = i.split(',')
-    classes = list(str(data[0]))
-    classes.insert(1, ',')
-    classes = ''.join(classes)
-    wings = list(str(fc.convert_decimal(fc.add_dot_separator(data[1]))))
-    wings.insert(17, ',')
-    wings = ''.join(wings)
-    engines = list(str(fc.convert_decimal(fc.add_dot_separator(data[2]))))
-    engines.insert(17, ',')
-    engines = ''.join(engines)
-    fuselages = list(str(fc.convert_decimal(fc.add_dot_separator(data[3]))))
-    fuselages.insert(17, ',')
-    fuselages = ''.join(fuselages)
-    tails = list(str(fc.convert_decimal(fc.add_dot_separator(data[4]))))
-    tails.insert(17, ',')
-    tails = ''.join(tails)
-    additionals = str(fc.convert_decimal(fc.add_dot_separator(data[5])))
-    data_normalize = classes + wings + engines + fuselages + tails + additionals
-    new_test_data.append(data_normalize)
-
+# test_data = open('separate_fusi_test.csv','r')
+# test_data_list = test_data.readlines()
+# test_data.close()
+#
+# actual = []
+# predict = []
+# new_test_data = []
+# for i in test_data_list:
+#     data = i.split(',')
+#     classes = list(str(data[0]))
+#     classes.insert(1, ',')
+#     classes = ''.join(classes)
+#     wings = list(str(fc.convert_decimal(fc.add_dot_separator(data[1]))))
+#     wings.insert(17, ',')
+#     wings = ''.join(wings)
+#     engines = list(str(fc.convert_decimal(fc.add_dot_separator(data[2]))))
+#     engines.insert(17, ',')
+#     engines = ''.join(engines)
+#     fuselages = list(str(fc.convert_decimal(fc.add_dot_separator(data[3]))))
+#     fuselages.insert(17, ',')
+#     fuselages = ''.join(fuselages)
+#     tails = list(str(fc.convert_decimal(fc.add_dot_separator(data[4]))))
+#     tails.insert(17, ',')
+#     tails = ''.join(tails)
+#     additionals = str(fc.convert_decimal(fc.add_dot_separator(data[5])))
+#     data_normalize = classes + wings + engines + fuselages + tails + additionals
+#     new_test_data.append(data_normalize)
+#
 # for i in new_test_data:
 #     all_values = i.split(',')
 #     input_data = (np.asfarray(all_values[1:]))
@@ -227,8 +194,6 @@ for i in test_data_list:
 #     actual.append(int(all_values[0]))
 #     outputs = n.predict(input_data)
 #     predict.append(np.argmax(outputs))
-
-# cross_val_score(n.train_data(new_data, 1000), new_data, new_test_data)
 #
 # random_data = open('data_uji_random.csv', 'r')
 # random_data_list = random_data.readlines()

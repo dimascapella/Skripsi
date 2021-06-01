@@ -92,7 +92,7 @@ def batch_arrays(array_data, array_lisy_variable):
 
 # print("Fusion Information Data =", information_fusion)
 print("Preprocessing Data =", add_dot_separator(['0100111111100000']))
-print("Preprocessing Data =", convert_decimal(add_dot_separator(['0101110111110010'])))
+print("Preprocessing Data =", convert_decimal(add_dot_separator(['0000000000000110'])))
 # print(convert(['0100111111100000']))
 # batch_arrays(array, wings)
 # print(wings)
